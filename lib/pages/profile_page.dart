@@ -94,7 +94,7 @@ class ProfilePage extends StatelessWidget {
                       builder: (context) => ConfirmDialog(
                         title: 'Delete account',
                         content:
-                            'This action will delete your profile and all devices. Continue?',
+                            'This action will delete your profile. Continue?',
                         confirmText: 'Delete',
                         onConfirm: () {
                           final navigator = Navigator.of(context);
