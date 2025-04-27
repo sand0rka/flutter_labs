@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:mobile/models/air_conditioner.dart';
 import 'package:mobile/storage/i_air_conditioner_storage.dart';
@@ -30,7 +29,6 @@ class AirConditionerStorage implements IAirConditionerStorage {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_airConditionersKey);
     if (raw == null || raw.isEmpty) return [];
-    log(raw);
     final decoded = jsonDecode(raw) as List<dynamic>;
     return decoded
         .map((item) => AirConditioner.fromJSON(item as Map<String, dynamic>))
