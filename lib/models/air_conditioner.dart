@@ -32,4 +32,20 @@ class AirConditioner {
       'isOn': isOn,
     };
   }
+
+  AirConditioner copyWith({
+    String? id,
+    String? userId,
+    String? location,
+    double? temperature,
+    bool? isOn,
+  }) {
+    return AirConditioner(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      location: location ?? this.location,
+      temperature: temperature ?? this.temperature,
+      isOn: isOn ?? this.isOn,
+    );
+  }
 }

@@ -4,9 +4,11 @@ import 'package:mobile/components/app_text_styles.dart';
 
 class DeviceCard extends StatefulWidget {
   final String location;
+  final double temperature;
 
   const DeviceCard({
     required this.location,
+    required this.temperature,
     super.key,
   });
 
@@ -39,7 +41,11 @@ class DeviceCardState extends State<DeviceCard> {
             widget.location,
             style: AppTextStyles.textField,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          Text(
+            '${widget.temperature.toStringAsFixed(1)}°C',
+            style: AppTextStyles.textField,
+          ),
         ],
       ),
     );
