@@ -8,12 +8,15 @@ import 'package:mobile/components/navigation.dart';
 import 'package:mobile/components/primary_button.dart';
 import 'package:mobile/cubits/auth_cubit.dart';
 import 'package:mobile/cubits/user_cubit.dart';
+import 'package:mobile/pages/microcontroller_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -70,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 24),
                 PrimaryButton(
                   text: 'Log out',
-                  isTablet: MediaQuery.of(context).size.width > 600,
+                  isTablet: isTablet,
                   onPressed: () {
                     showDialog<void>(
                       context: context,
@@ -82,6 +85,19 @@ class ProfilePage extends StatelessWidget {
                           Navigator.of(dialogContext).pop();
                           context.read<AuthCubit>().logout();
                         },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+                PrimaryButton(
+                  text: 'Configure Microcontroller',
+                  isTablet: isTablet,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const MicrocontrollerPage(),
                       ),
                     );
                   },
