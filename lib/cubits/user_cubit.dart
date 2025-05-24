@@ -6,19 +6,21 @@ import 'package:mobile/storage/user_storage.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  final UserStorage _storage = UserStorage();
+  final UserStorage _storage;
 
-  UserCubit() : super(const UserState.initial()) {
-    loadUser();
+  UserCubit({UserStorage? storage})
+      : _storage = storage ?? UserStorage(),
+        super(const UserState.initial()) {
+    _loadUser();
   }
 
-  Future<void> loadUser() async {
+  Future<void> _loadUser() async {
     final user = UserStorage.loggedUser;
     if (user != null) {
       emit(UserState.loaded(user));
-    } else {
-      emit(const UserState.error('User not found'));
+      return;
     }
+    emit(const UserState.error('User not found'));
   }
 
   Future<void> updateUser(User updatedUser) async {

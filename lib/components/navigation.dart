@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/components//app_colors.dart';
-import 'package:mobile/pages/home_page.dart';
-import 'package:mobile/pages/profile_page.dart';
+import 'package:mobile/pages/home/screen.dart';
+import 'package:mobile/pages/profile/screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -40,7 +40,6 @@ class BottomNavBar extends StatelessWidget {
               builder: (_) => const ProfilePage(),
             ),
           );
-
         }
       },
     );

@@ -4,27 +4,37 @@ enum ConnectionType { wifi, mobile, none, unknown }
 
 class ConnectivityState extends Equatable {
   final ConnectionType type;
+  final bool isConnected;
 
-  const ConnectivityState(this.type);
+  const ConnectivityState._(this.type, this.isConnected);
 
-  const ConnectivityState.unknown() : type = ConnectionType.unknown;
+  const ConnectivityState.unknown() : this._(ConnectionType.unknown, false);
 
   factory ConnectivityState.fromResult(ConnectivityResult result) {
-    switch (result) {
-      case ConnectivityResult.wifi:
-        return const ConnectivityState(ConnectionType.wifi);
-      case ConnectivityResult.mobile:
-        return const ConnectivityState(ConnectionType.mobile);
-      case ConnectivityResult.none:
-        return const ConnectivityState(ConnectionType.none);
-      default:
-        return const ConnectivityState(ConnectionType.unknown);
-    }
+    final type = result.toConnectionType();
+    return ConnectivityState._(type, type.isConnected);
   }
 
-  bool get isConnected =>
-      type == ConnectionType.wifi || type == ConnectionType.mobile;
-
   @override
-  List<Object?> get props => [type];
+  List<Object?> get props => [type, isConnected];
+}
+
+extension on ConnectionType {
+  bool get isConnected =>
+      this == ConnectionType.wifi || this == ConnectionType.mobile;
+}
+
+extension on ConnectivityResult {
+  ConnectionType toConnectionType() {
+    switch (this) {
+      case ConnectivityResult.wifi:
+        return ConnectionType.wifi;
+      case ConnectivityResult.mobile:
+        return ConnectionType.mobile;
+      case ConnectivityResult.none:
+        return ConnectionType.none;
+      default:
+        return ConnectionType.unknown;
+    }
+  }
 }

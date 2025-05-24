@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/cubits/air_conditioner_cubit.dart';
 import 'package:mobile/cubits/auth_cubit.dart';
 import 'package:mobile/cubits/connectivity_cubit.dart';
 import 'package:mobile/cubits/mqtt_cubit.dart';
 import 'package:mobile/cubits/user_cubit.dart';
-import 'package:mobile/pages/home_page.dart';
-import 'package:mobile/pages/login_page.dart';
+import 'package:mobile/pages/air_conditioner/cubit.dart';
+import 'package:mobile/pages/home/screen.dart';
+import 'package:mobile/pages/login/screen.dart';
 import 'package:mobile/storage/user_storage.dart';
 
 void main() {
@@ -22,7 +22,7 @@ void main() {
         BlocProvider(
           create: (context) {
             final cubit = AuthCubit(userStorage);
-            cubit.checkAuth(context);
+            cubit.checkAuth();
             return cubit;
           },
         ),

@@ -9,26 +9,26 @@ class MqttCubit extends Cubit<MqttState> {
   late final MqttServerClient client;
 
   MqttCubit() : super(const MqttState.initial()) {
-    _connectAndListen();
+    _initClient();
+    _connect();
   }
 
-  Future<void> _connectAndListen() async {
+  void _initClient() {
     client = MqttServerClient.withPort(
       'test.mosquitto.org',
-      'flutter_client_id_${DateTime.now().millisecondsSinceEpoch}',
+      'flutter_client_${DateTime.now().millisecondsSinceEpoch}',
       1883,
     );
 
-    client.setProtocolV311();
-    client.logging(on: true);
-    client.keepAlivePeriod = 20;
+    client
+      ..setProtocolV311()
+      ..logging(on: true)
+      ..keepAlivePeriod = 20
+      ..onDisconnected = _onDisconnected
+      ..onConnected = _onConnected;
+  }
 
-    client.onDisconnected =
-        () => emit(state.copyWith(status: MqttStatus.disconnected));
-    client.onConnected =
-        () => emit(state.copyWith(status: MqttStatus.connected));
-    client.onSubscribed = (_) {};
-
+  Future<void> _connect() async {
     final connMessage = MqttConnectMessage()
         .withClientIdentifier(client.clientIdentifier)
         .startClean()
@@ -36,34 +36,49 @@ class MqttCubit extends Cubit<MqttState> {
 
     client.connectionMessage = connMessage;
 
-    try {
-      await client.connect();
-    } catch (e) {
-      client.disconnect();
-      emit(state.copyWith(status: MqttStatus.error));
-      return;
-    }
-
-    if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      emit(state.copyWith(status: MqttStatus.connected));
-
-      client.subscribe('sensor/temperature/sasha2025', MqttQos.atMostOnce);
-
-      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
-        final recMess = messages[0].payload as MqttPublishMessage;
-        final payload = MqttPublishPayload.bytesToStringAsString(
-          recMess.payload.message,
-        );
-
-        final cleaned = payload.replaceAll(RegExp(r'[^0-9.\-]'), '');
-        final parsedTemp = double.tryParse(cleaned);
-
-        if (parsedTemp != null) {
-          emit(state.copyWith(temperature: parsedTemp));
-        }
-      });
+    await client.connect();
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      _setupSubscriptions();
     } else {
-      emit(state.copyWith(status: MqttStatus.error));
+      _onError();
     }
+  }
+
+  void _setupSubscriptions() {
+    client.subscribe('sensor/temperature/sasha2025', MqttQos.atMostOnce);
+    client.updates?.listen(_handleIncomingMessage);
+  }
+
+  void _handleIncomingMessage(List<MqttReceivedMessage<MqttMessage>> messages) {
+    final recMess = messages[0].payload as MqttPublishMessage;
+    final payload = MqttPublishPayload.bytesToStringAsString(
+      recMess.payload.message,
+    );
+
+    final temperature = _parseTemperature(payload);
+    if (temperature != null) {
+      emit(state.copyWith(temperature: temperature));
+    }
+  }
+
+  double? _parseTemperature(String payload) {
+    final cleaned = payload.replaceAll(RegExp(r'[^0-9.\-]'), '');
+    return double.tryParse(cleaned);
+  }
+
+  void _onConnected() => emit(state.copyWith(status: MqttStatus.connected));
+
+  void _onDisconnected() =>
+      emit(state.copyWith(status: MqttStatus.disconnected));
+
+  void _onError() {
+    client.disconnect();
+    emit(state.copyWith(status: MqttStatus.error));
+  }
+
+  @override
+  Future<void> close() {
+    client.disconnect();
+    return super.close();
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/models/air_conditioner.dart';
 import 'package:mobile/storage/air_conditioner_storage.dart';
 
-part 'air_conditioner_state.dart';
+part 'state.dart';
 
 class AirConditionerCubit extends Cubit<AirConditionerState> {
   final AirConditionerStorage _storage = AirConditionerStorage();
