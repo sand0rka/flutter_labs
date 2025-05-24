@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/components/app_colors.dart';
 import 'package:mobile/components/app_text_styles.dart';
 import 'package:mobile/components/custom_text_field.dart';
-import 'package:mobile/components/power_switch.dart';
 import 'package:mobile/components/primary_button.dart';
-import 'package:mobile/components/temperature_slider.dart';
-import 'package:mobile/cubits/air_conditioner_cubit.dart';
 import 'package:mobile/models/air_conditioner.dart';
+import 'package:mobile/pages/air_conditioner/cubit.dart';
+import 'package:mobile/pages/air_conditioner/widgets/power_switch.dart';
+import 'package:mobile/pages/air_conditioner/widgets/temperature_slider.dart';
 
 class AirConditionerPage extends StatelessWidget {
   final AirConditioner ac;

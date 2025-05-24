@@ -1,4 +1,4 @@
-part of 'air_conditioner_cubit.dart';
+part of 'cubit.dart';
 
 class AirConditionerState extends Equatable {
   final List<AirConditioner> airConditioners;

@@ -5,30 +5,25 @@ class UserState extends Equatable {
   final bool isDeleted;
   final String? errorMessage;
 
-  const UserState({
+  const UserState._({
     this.user,
     this.isDeleted = false,
     this.errorMessage,
   });
 
-  const UserState.initial()
-      : user = null,
-        isDeleted = false,
-        errorMessage = null;
+  const UserState.initial() : this._();
 
-  const UserState.loaded(User this.user)
-      : isDeleted = false,
-        errorMessage = null;
+  const UserState.loaded(User user) : this._(user: user);
 
-  const UserState.deleted()
-      : user = null,
-        isDeleted = true,
-        errorMessage = null;
+  const UserState.deleted() : this._(isDeleted: true);
 
-  const UserState.error(String message)
-      : user = null,
-        isDeleted = false,
-        errorMessage = message;
+  const UserState.error(String message) : this._(errorMessage: message);
+
+  bool get isLoading => this == const UserState.initial();
+
+  bool get isLoaded => user != null;
+
+  bool get hasError => errorMessage != null;
 
   @override
   List<Object?> get props => [user, isDeleted, errorMessage];

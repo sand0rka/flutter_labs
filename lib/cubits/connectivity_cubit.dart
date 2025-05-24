@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'connectivity_state.dart';
 
 class ConnectivityCubit extends Cubit<ConnectivityState> {
-  final Connectivity _connectivity = Connectivity();
+  final Connectivity _connectivity;
   StreamSubscription<ConnectivityResult>? _subscription;
 
-  ConnectivityCubit() : super(const ConnectivityState.unknown()) {
+  ConnectivityCubit({Connectivity? connectivity})
+      : _connectivity = connectivity ?? Connectivity(),
+        super(const ConnectivityState.unknown()) {
     _init();
   }
 
